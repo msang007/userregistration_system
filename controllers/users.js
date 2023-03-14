@@ -20,10 +20,11 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).render("login", {
-                msg: "Please Enter Your Email and Password",
-                msg_type: "error",
-            });
+            // return res.status(400).render("login", {
+            //     msg: "Please Enter Your Email and Password",
+            //     msg_type: "error",
+            // });
+            
         }
 
         db.query(
@@ -101,7 +102,7 @@ const register = (req, res) => {
 
             db.query(
                 "insert into users set ?",
-                { name: name, email: email, password: hashedPassword },
+                { name: name, email: email, password: hashedPassword},
                 (error, result) => {
                     if (error) {
                         console.log(error);
