@@ -10,12 +10,13 @@ import mysql from "mysql";
 import path from "path";
 import router from "./routes/pages.js";
 import routers from "./routes/auth.js";
+import routes from "./routes/json.js";
 import { fileURLToPath } from 'url';
 
-const app =express();
+const app = express();
 
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helmet());
@@ -28,17 +29,17 @@ const ENV = dotenv.config().parsed;
 
 
 const db = mysql.createConnection({
-host:ENV.DB_HOST,
-user:ENV.DB_USER,
-password:ENV.DB_PASSWORD,
-database:ENV.DB_NAME
+    host: ENV.DB_HOST,
+    user: ENV.DB_USER,
+    password: ENV.DB_PASSWORD,
+    database: ENV.DB_NAME
 });
 
-db.connect((err)=>{
-    if(err){
+db.connect((err) => {
+    if (err) {
         console.log(err);
     }
-    else{
+    else {
         console.log("Connected to mysql Database!");
     }
 })
@@ -62,7 +63,8 @@ hbs.registerPartials(partialsPath);
 
 
 app.use("/", router);
-app.use("/auth",routers);
+app.use("/auth", routers);
+app.use("/", routes)
 
 
 
@@ -70,4 +72,4 @@ app.use("/auth",routers);
 
 
 const port = process.env.Port || 5000;
-app.listen(port,()=> console.log(`listening on port ${port}`));
+app.listen(port, () => console.log(`listening on port ${port}`));

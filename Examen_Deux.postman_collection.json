@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "877b2fc1-e4be-428a-916e-209bfd71bc5a",
+		"name": "Examen_Deux",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Mamadou Sangare\",\r\n    \"email\": \"mamadou.sangare31@icloud.com\",\r\n    \"password\": \"canada123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/allUsers",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"allUsers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:5000/allUsers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/allUsers",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"allUsers"
+					]
+				},
+				"description": "Methode qui permet d'ajouter un utlisateur!"
+			},
+			"response": []
+		},
+		{
+			"name": "getUserbyId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/allUsers/2",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"allUsers",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUserById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/allUsers/5",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"allUsers",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

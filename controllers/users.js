@@ -1,4 +1,5 @@
 import mysql from "mysql";
+import promiseMysql from "promise-mysql"
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -10,21 +11,83 @@ const db = mysql.createConnection({
     password: ENV.DB_PASSWORD,
     database: ENV.DB_NAME
 });
-/*
-const register = (req,res) =>{
-res.send("form submitt");
-};
-*/
+///////////////////////////////////////////////////////////////////////////////////////////
+// juste dans le cas de tester mes routes avec postman
+
+
+const connexion = promiseMysql.createConnection({
+    host: ENV.DB_HOST,
+    user: ENV.DB_USER,
+    password: ENV.DB_PASSWORD,
+    database: ENV.DB_NAME
+});
+
+const getAllUsers = async (req, res) => {
+
+    const con = await connexion
+    let sql = "SELECT name,email FROM users"
+    try {
+        const result = await con.query(sql)
+        res.status(200).json({ data: result })
+    }
+    catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+
+}
+
+const getUsersById = async (req, res) => {
+    const con = await connexion
+    let { id } = req.params
+    if (!id) return res.status(400).json({ message: 'id is required' })
+    let sql = "SELECT * FROM users WHERE id=?"
+    try {
+        const result = await con.query(sql, id)
+        res.status(200).json({ data: result })
+    }
+    catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+}
+
+const adduser = async (req, res) => {
+    const con = await connexion
+    let sql = 'INSERT INTO users(name,email,password) VALUES(?)'
+    const user = [req.body.name, req.body.email, req.body.password]
+    try {
+        const result = await con.query(sql, [user]);
+        res.status(201).json({ data: result, message: "user ajoute avec succes!" })
+    }
+    catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+}
+const deleteuser = async (req, res) => {
+    const con = await connexion
+    const { id } = req.params
+    if (!id) return res.status(404).json({ error: true, message: "id est requis" })
+    let sql = " DELETE FROM users WHERE id=?"
+    try {
+        const result = await con.query(sql, id)
+        res.status(200).json({ message: `L'utilisateur ${id} a ete supprime avec succes` })
+
+    }
+    catch (error) {
+        res.status(404).json({ error: true, message: error.message })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            // return res.status(400).render("login", {
-            //     msg: "Please Enter Your Email and Password",
-            //     msg_type: "error",
-            // });
-            
+            return res.status(400).render("login", {
+                msg: "Please Enter Your Email and Password",
+                msg_type: "error",
+            });
+
         }
 
         db.query(
@@ -102,7 +165,7 @@ const register = (req, res) => {
 
             db.query(
                 "insert into users set ?",
-                { name: name, email: email, password: hashedPassword},
+                { name: name, email: email, password: hashedPassword },
                 (error, result) => {
                     if (error) {
                         console.log(error);
@@ -123,32 +186,32 @@ const isLoggedIn = async (req, res, next) => {
     //req.name = "Check Login....";
     //console.log(req.cookies);
     if (req.cookies.Mamadou) {
-      try {
-        const decode = await util.promisify(jwt.verify)(
-          req.cookies.Mamadou,
-          ENV.JWT_SECRET
-        );
-        //console.log(decode);
-        db.query(
-          "select * from users where id=?",
-          [decode.id],
-          (err, results) => {
-            //console.log(results);
-            if (!results) {
-              return next();
-            }
-            req.user = results[0];
+        try {
+            const decode = await util.promisify(jwt.verify)(
+                req.cookies.Mamadou,
+                ENV.JWT_SECRET
+            );
+            //console.log(decode);
+            db.query(
+                "select * from users where id=?",
+                [decode.id],
+                (err, results) => {
+                    //console.log(results);
+                    if (!results) {
+                        return next();
+                    }
+                    req.user = results[0];
+                    return next();
+                }
+            );
+        } catch (error) {
+            console.log(error);
             return next();
-          }
-        );
-      } catch (error) {
-        console.log(error);
-        return next();
-      }
+        }
     } else {
-      next();
+        next();
     }
-  };
+};
 
 const logout = async (req, res) => {
     res.cookie("Mamadou", "logout", {
@@ -157,4 +220,6 @@ const logout = async (req, res) => {
     });
     res.status(200).redirect("/");
 };
-export default { login, register, isLoggedIn, logout }
+
+
+export default { login, register, isLoggedIn, logout, getAllUsers, getUsersById, adduser, deleteuser }
